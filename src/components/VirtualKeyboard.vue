@@ -5,14 +5,12 @@
         v-for="(key, keyIndex) in row"
         :key="'key-' + keyIndex"
         @click="handleKeyClick(key)"
-        class="keyboard-key"
+        :class="['keyboard-key', letterStatuses?.[key]]"
       >
-        {{ key }}
+        <template v-if="key === 'backspace'">&larr;</template>
+        <template v-else-if="key === 'enter'">&#8629;</template>
+        <template v-else>{{ key }}</template>
       </button>
-    </div>
-    <div class="keyboard-row">
-      <button @click="handleKeyClick('backspace')" class="keyboard-key">⌫</button>
-      <button @click="handleKeyClick('enter')" class="keyboard-key">↩</button>
     </div>
   </div>
 </template>
@@ -20,12 +18,16 @@
 <script setup>
 import { defineEmits } from 'vue'
 
+defineProps({
+  letterStatuses: Object
+})
+
 const emit = defineEmits(['keyClick'])
 
 const keyboardRows = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+  ['backspace', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'enter']
 ]
 
 function handleKeyClick(key) {
@@ -36,24 +38,29 @@ function handleKeyClick(key) {
 <style scoped>
 .keyboard {
   margin-top: 30px;
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
 }
 
 .keyboard-row {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .keyboard-key {
-  width: 30px;
-  height: 30px;
+  flex: 1;
+  height: 50px;
   font-size: 18px;
   background-color: #f1f1f1;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-transform: uppercase;
+  max-width: 1fr;
 }
 
 .keyboard-key:hover {
@@ -62,5 +69,27 @@ function handleKeyClick(key) {
 
 .keyboard-key:active {
   background-color: #aaa;
+}
+
+@media (max-width: 480px) {
+  .keyboard-key {
+    height: 44px;
+    font-size: 16px;
+  }
+}
+
+.correct {
+  background-color: #6aaa64;
+  color: white;
+}
+
+.present {
+  background-color: #c9b458;
+  color: white;
+}
+
+.absent {
+  background-color: #787c7e;
+  color: white;
 }
 </style>

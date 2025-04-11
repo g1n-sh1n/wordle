@@ -21,7 +21,7 @@
       {{ isCorrect ? '🎉 bravo！' : '😞 The right answer is：' + targetWord.toUpperCase() }}
     </div>
 
-    <VirtualKeyboard @keyClick="handleKeyClick" />
+    <VirtualKeyboard @keyClick="handleKeyClick"   :letterStatuses="letterStatuses"/>
   </div>
 </template>
 
@@ -29,6 +29,7 @@
 import { ref, computed } from 'vue'
 import VirtualKeyboard from './components/VirtualKeyboard.vue'
 import dictionary from './assets/dictionary.json'
+import { onMounted, onBeforeUnmount } from 'vue'
 
 const wordPool = dictionary.words 
 const targetWord = wordPool[Math.floor(Math.random() * wordPool.length)].toLowerCase()
@@ -38,6 +39,18 @@ const currentGuess = ref('')
 const maxRows = 6
 const gameOver = computed(() => guesses.value.length >= maxRows || isCorrect.value)
 const isCorrect = computed(() => guesses.value.some(g => g.toLowerCase() === targetWord.toLowerCase()))
+
+const preventDoubleTapZoom = (event) => {
+  event.preventDefault()  // 阻止双击缩放
+}
+
+onMounted(() => {
+  document.addEventListener('dblclick', preventDoubleTapZoom, { passive: false })
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('dblclick', preventDoubleTapZoom, { passive: false })
+})
 
 
 // function isValidGuess(word) {
@@ -104,9 +117,36 @@ function getCellClass(row, col) {
   else if (targetWord.includes(letter)) return 'present'
   else return 'absent'
 }
+
+const letterStatuses = computed(() => {
+  const statusMap = {}
+
+  guesses.value.forEach(guess => {
+    guess.split('').forEach((letter, i) => {
+      if (targetWord[i] === letter) {
+        statusMap[letter] = 'correct'
+      } else if (targetWord.includes(letter)) {
+        // 不要覆盖已有的 correct 状态
+        if (statusMap[letter] !== 'correct') {
+          statusMap[letter] = 'present'
+        }
+      } else {
+        if (!statusMap[letter]) {
+          statusMap[letter] = 'absent'
+        }
+      }
+    })
+  })
+
+  return statusMap
+})
+
 </script>
 
 <style scoped>
+html, body {
+  touch-action: manipulation; 
+}
 .wordle-container {
   margin: auto;
   display: flex;
