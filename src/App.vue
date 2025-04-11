@@ -1,6 +1,10 @@
 <template>
   <div class="wordle-container" @keydown="handleKey" tabindex="0">
     <h1>Intellectual Disability Diagnoser</h1>
+    <DisclaimerModal ref="modal" />
+    <span v-if="!acknowledged" @click="openDisclaimer" class="disclaimer-btn">
+      Disclaimer
+    </span>
     <div class="grid">
       <div
         v-for="(row, rowIndex) in 6"
@@ -21,12 +25,12 @@
       <div v-if="isCorrect">
         <p>おめでとう</p>
         <p>You are not mentally retarded, you can obtain a professional diagnostic report</p>
-        <p>(note: due to tariffs you will be charged an additional 104% diagnostic fee </p>
+        <p>(note: due to tariffs you will be charged an additional 104% diagnostic fee)</p>
       </div>
       <div v-else>
         <p>The right answer is：' + {{targetWord.toUpperCase()}}</p>
         <p>すみません</p>
-        <p>You have been diagnosed as mentally retarded By Doctor Gin. Please contact us offline to discuss the cost and schedule of your follow-up treatment plan.</p>
+        <p>You have been diagnosed as mentally retarded by Doctor Gin. Please contact us offline to discuss the cost and schedule of your follow-up treatment plan.</p>
       </div>
     </div>
 
@@ -39,6 +43,23 @@ import { ref, computed } from 'vue'
 import VirtualKeyboard from './components/VirtualKeyboard.vue'
 import dictionary from './assets/dictionary.json'
 import { onMounted, onBeforeUnmount } from 'vue'
+import DisclaimerModal from '@/components/DisclaimerModal.vue'
+
+const acknowledged = ref(false)
+const modal = ref(null)
+
+const checkAcknowledged = () => {
+  acknowledged.value = localStorage.getItem('disclaimerAcknowledged') === 'true'
+}
+
+const openDisclaimer = () => {
+  modal.value?.openModal()
+}
+
+onMounted(() => {
+  checkAcknowledged()
+  window.addEventListener('disclaimer-acknowledged', checkAcknowledged)
+})
 
 const wordPool = dictionary.words 
 const targetWord = wordPool[Math.floor(Math.random() * wordPool.length)].toLowerCase()
@@ -67,26 +88,6 @@ function isValidGuess(word) {
   return word.length === 5 && wordPool.includes(word.toLowerCase())
 }
 
-// function handleKeyClick(e) {
-//   if (gameOver.value) return
-
-//   const key = e.key.toLowerCase()
-
-//   if (key === 'enter') {
-//      if (currentGuess.value.length === 5) {
-//       if (isValidGuess(currentGuess.value)) {
-//         guesses.value.push(currentGuess.value)
-//         currentGuess.value = ''
-//       } else {
-//         alert('请输入有效的单词！')
-//       }
-//      }
-//   } else if (key === 'backspace') {
-//     currentGuess.value = currentGuess.value.slice(0, -1)
-//   } else if (/^[a-z]$/.test(key) && currentGuess.value.length < 5) {
-//     currentGuess.value += key
-//   }
-// }
 
 function handleKey(key) {
   if (gameOver.value) return
@@ -94,6 +95,8 @@ function handleKey(key) {
   if(key?.key){
     key = key.key.toLowerCase()
   }
+
+  shakingRow.value = null
 
   if (key === 'enter' && currentGuess.value.length === 5) {
     if (isValidGuess(currentGuess.value)) {
@@ -236,5 +239,14 @@ h1 {
   margin-top: 20px;
   font-size: 14px;
   display: flex;
+}
+
+.disclaimer-btn {
+  text-align: center;
+  font-size: 14px;
+  color: #64748b; 
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-bottom: 30px;
 }
 </style>
