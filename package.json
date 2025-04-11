@@ -40,6 +40,10 @@
     },
     "rules": {}
   },
+  "engines": {
+    "node": "18.x",
+    "npm": "10.x"
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
