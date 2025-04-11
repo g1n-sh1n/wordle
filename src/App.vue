@@ -1,11 +1,11 @@
 <template>
   <div class="wordle-container" @keydown="handleKey" tabindex="0">
-    <h1>Gin's Daily Wordle</h1>
+    <h1>Intellectual Disability Diagnoser</h1>
     <div class="grid">
       <div
         v-for="(row, rowIndex) in 6"
         :key="'row-' + rowIndex"
-        class="row"
+        :class="['row', { 'row-shaking': shakingRow === rowIndex }]"
       >
         <div
           v-for="(col, colIndex) in 5"
@@ -18,10 +18,19 @@
     </div>
 
     <div v-if="gameOver" class="result">
-      {{ isCorrect ? '🎉 bravo！' : '😞 The right answer is：' + targetWord.toUpperCase() }}
+      <div v-if="isCorrect">
+        <p>おめでとう</p>
+        <p>You are not mentally retarded, you can obtain a professional diagnostic report</p>
+        <p>(note: due to tariffs you will be charged an additional 104% diagnostic fee </p>
+      </div>
+      <div v-else>
+        <p>The right answer is：' + {{targetWord.toUpperCase()}}</p>
+        <p>すみません</p>
+        <p>You have been diagnosed as mentally retarded By Doctor Gin. Please contact us offline to discuss the cost and schedule of your follow-up treatment plan.</p>
+      </div>
     </div>
 
-    <VirtualKeyboard @keyClick="handleKeyClick"   :letterStatuses="letterStatuses"/>
+    <VirtualKeyboard @keyClick="handleKey" :letterStatuses="letterStatuses"/>
   </div>
 </template>
 
@@ -39,9 +48,10 @@ const currentGuess = ref('')
 const maxRows = 6
 const gameOver = computed(() => guesses.value.length >= maxRows || isCorrect.value)
 const isCorrect = computed(() => guesses.value.some(g => g.toLowerCase() === targetWord.toLowerCase()))
+const shakingRow = ref(null)
 
 const preventDoubleTapZoom = (event) => {
-  event.preventDefault()  // 阻止双击缩放
+  event.preventDefault()  
 }
 
 onMounted(() => {
@@ -53,43 +63,45 @@ onBeforeUnmount(() => {
 })
 
 
-// function isValidGuess(word) {
-//   return word.length === 5 && wordPool.includes(word.toLowerCase())
-// }
-
-function handleKey(e) {
-  if (gameOver.value) return
-
-  const key = e.key.toLowerCase()
-
-  if (key === 'enter') {
-     if (currentGuess.value.length === 5) {
-    //   if (isValidGuess(currentGuess.value)) {
-        guesses.value.push(currentGuess.value)
-        currentGuess.value = ''
-    //   } else {
-    //     alert('请输入有效的单词！')
-    //   }
-     }
-  } else if (key === 'backspace') {
-    currentGuess.value = currentGuess.value.slice(0, -1)
-  } else if (/^[a-z]$/.test(key) && currentGuess.value.length < 5) {
-    currentGuess.value += key
-  }
+function isValidGuess(word) {
+  return word.length === 5 && wordPool.includes(word.toLowerCase())
 }
 
-function handleKeyClick(key) {
+// function handleKeyClick(e) {
+//   if (gameOver.value) return
+
+//   const key = e.key.toLowerCase()
+
+//   if (key === 'enter') {
+//      if (currentGuess.value.length === 5) {
+//       if (isValidGuess(currentGuess.value)) {
+//         guesses.value.push(currentGuess.value)
+//         currentGuess.value = ''
+//       } else {
+//         alert('请输入有效的单词！')
+//       }
+//      }
+//   } else if (key === 'backspace') {
+//     currentGuess.value = currentGuess.value.slice(0, -1)
+//   } else if (/^[a-z]$/.test(key) && currentGuess.value.length < 5) {
+//     currentGuess.value += key
+//   }
+// }
+
+function handleKey(key) {
   if (gameOver.value) return
 
+  if(key?.key){
+    key = key.key.toLowerCase()
+  }
+
   if (key === 'enter' && currentGuess.value.length === 5) {
-    // if (isValidGuess(currentGuess.value)) {
-    //   guesses.value.push(currentGuess.value)
-    //   currentGuess.value = ''
-    // } else {
-    //   alert('！')
-    // }
-     guesses.value.push(currentGuess.value)
+    if (isValidGuess(currentGuess.value)) {
+      guesses.value.push(currentGuess.value)
       currentGuess.value = ''
+    } else {
+      shakingRow.value = guesses.value.length
+    }
   } else if (key === 'backspace') {
     currentGuess.value = currentGuess.value.slice(0, -1)
   } else if (/^[a-z]$/.test(key) && currentGuess.value.length < 5) {
@@ -126,7 +138,6 @@ const letterStatuses = computed(() => {
       if (targetWord[i] === letter) {
         statusMap[letter] = 'correct'
       } else if (targetWord.includes(letter)) {
-        // 不要覆盖已有的 correct 状态
         if (statusMap[letter] !== 'correct') {
           statusMap[letter] = 'present'
         }
@@ -147,6 +158,15 @@ const letterStatuses = computed(() => {
 html, body {
   touch-action: manipulation; 
 }
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
 .wordle-container {
   margin: auto;
   display: flex;
@@ -174,6 +194,10 @@ h1 {
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
 }
+
+.row-shaking{
+    animation: shake 0.5s ease-in-out;
+  }
 
 .cell {
   width: 50px;
@@ -210,7 +234,7 @@ h1 {
 
 .result {
   margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 14px;
+  display: flex;
 }
 </style>
