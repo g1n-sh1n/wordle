@@ -1,6 +1,10 @@
 <template>
   <div class="keyboard">
-    <div v-for="(row, index) in keyboardRows" :key="'row-' + index" class="keyboard-row">
+    <div
+      v-for="(row, index) in keyboardRows"
+      :key="'row-' + index"
+      class="keyboard-row"
+    >
       <button
         v-for="(key, keyIndex) in row"
         :key="'key-' + keyIndex"
@@ -16,13 +20,13 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue'
+import { defineEmits, defineProps } from 'vue'
+
+const emit = defineEmits(['keyClick'])
 
 defineProps({
   letterStatuses: Object
 })
-
-const emit = defineEmits(['keyClick'])
 
 const keyboardRows = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
@@ -41,55 +45,45 @@ function handleKeyClick(key) {
   width: 100%;
   max-width: 500px;
   margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .keyboard-row {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 6px;
-  margin-bottom: 8px;
 }
 
 .keyboard-key {
-  flex: 1;
-  height: 50px;
-  font-size: 18px;
+  height: 48px;
+  font-size: 16px;
   background-color: #f1f1f1;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   text-transform: uppercase;
-  max-width: 1fr;
 }
 
-.keyboard-key:hover {
-  background-color: #bbb;
+.correct {
+  background-color: #6aaa64 !important;
+  color: white;
 }
-
-.keyboard-key:active {
-  background-color: #aaa;
+.present {
+  background-color: #c9b458 !important;
+  color: white;
+}
+.absent {
+  background-color: #787c7e !important;
+  color: white;
 }
 
 @media (max-width: 480px) {
   .keyboard-key {
-    height: 44px;
-    font-size: 16px;
+    height: 42px;
+    font-size: 14px;
   }
-}
-
-.correct {
-  background-color: #6aaa64;
-  color: white;
-}
-
-.present {
-  background-color: #c9b458;
-  color: white;
-}
-
-.absent {
-  background-color: #787c7e;
-  color: white;
 }
 </style>
