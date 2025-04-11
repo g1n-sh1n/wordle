@@ -57,6 +57,12 @@ function handleKeyClick(key) {
 }
 
 .keyboard-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: 'Arial', 'Roboto', sans-serif;
+  line-height: 1;
   height: 48px;
   font-size: 16px;
   background-color: #f1f1f1;
