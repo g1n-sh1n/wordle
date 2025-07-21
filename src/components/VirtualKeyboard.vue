@@ -51,34 +51,24 @@ function handleKeyClick(key) {
 <style scoped>
 .keyboard {
   margin-top: 1.5rem;
-  width: 100%;
-  max-width: min(500px, 95vw);
+  width: 95vw;
+  max-width: 400px;
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(4px, 1vw, 8px);
-  padding: 0 0.5rem;
+  gap: clamp(2px, 0.6vw, 5px);
+  padding: 0;
 }
 
 .keyboard-row {
+  width: 100%;
   display: flex;
   justify-content: center;
-  gap: clamp(2px, 0.5vw, 6px);
+  gap: clamp(2px, 0.5vw, 4px);
 }
 
-/* 第一行：10个按键 */
-.row-1 {
-  margin: 0 auto;
-}
-
-/* 第二行：9个按键，居中对齐 */
-.row-2 {
-  margin: 0 auto;
-  padding: 0 5%;
-}
-
-/* 第三行：包含特殊按键 */
-.row-3 {
+/* 所有行统一布局 */
+.row-1, .row-2, .row-3 {
   margin: 0 auto;
 }
 
@@ -90,9 +80,8 @@ function handleKeyClick(key) {
   padding: 0;
   font-family: 'Arial', 'Roboto', sans-serif;
   line-height: 1;
-  height: clamp(42px, 8vw, 58px);
-  min-width: clamp(28px, 6vw, 44px);
-  font-size: clamp(12px, 2.5vw, 16px);
+  height: clamp(55px, 13vw, 75px);
+  font-size: clamp(16px, 3.5vw, 20px);
   font-weight: 600;
   background-color: #f1f1f1;
   border: none;
@@ -102,24 +91,21 @@ function handleKeyClick(key) {
   text-transform: uppercase;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex: 1;
-  max-width: clamp(35px, 9vw, 48px);
 }
 
 /* 宽按键样式 */
 .key-wide {
   flex: 1.5;
-  max-width: clamp(50px, 15vw, 80px);
-  min-width: clamp(45px, 12vw, 65px);
 }
 
 .key-text {
-  font-size: clamp(8px, 1.8vw, 11px);
+  font-size: clamp(11px, 2.5vw, 14px);
   margin-top: 1px;
   display: none;
 }
 
 .key-icon {
-  font-size: clamp(14px, 3vw, 18px);
+  font-size: clamp(18px, 4vw, 26px);
 }
 
 .keyboard-key:hover {
@@ -154,78 +140,75 @@ function handleKeyClick(key) {
   opacity: 0.9;
 }
 
-/* 小屏幕优化 */
-@media (max-width: 480px) {
+/* 移动端优化 */
+@media (max-width: 600px) {
   .keyboard {
-    gap: clamp(3px, 0.8vw, 6px);
-    padding: 0 0.25rem;
+    width: 96vw;
+    gap: clamp(2px, 0.6vw, 4px);
+  }
+  
+  .keyboard-row {
+    gap: clamp(1px, 0.3vw, 3px);
   }
   
   .keyboard-key {
-    height: clamp(38px, 9vw, 45px);
-    min-width: clamp(24px, 7vw, 32px);
-    max-width: clamp(30px, 8.5vw, 40px);
-  }
-  
-  .key-wide {
-    max-width: clamp(45px, 16vw, 65px);
-    min-width: clamp(40px, 14vw, 55px);
+    height: clamp(50px, 14vw, 65px);
   }
   
   .key-text {
     display: block;
-  }
-  
-  .row-2 {
-    padding: 0 8%;
   }
 }
 
 /* 超小屏幕优化 */
 @media (max-width: 360px) {
   .keyboard {
-    gap: clamp(2px, 0.6vw, 4px);
+    width: 98vw;
+    gap: clamp(1px, 0.4vw, 3px);
+  }
+  
+  .keyboard-row {
+    gap: clamp(1px, 0.2vw, 2px);
   }
   
   .keyboard-key {
-    height: clamp(35px, 10vw, 42px);
-    font-size: clamp(10px, 2.8vw, 14px);
-  }
-  
-  .row-2 {
-    padding: 0 10%;
+    height: clamp(45px, 13vw, 55px);
+    font-size: clamp(12px, 3vw, 16px);
   }
 }
 
 /* 大屏幕优化 */
 @media (min-width: 768px) {
   .keyboard {
-    gap: 8px;
+    width: 100%;
+    max-width: 380px;
+    gap: 4px;
   }
   
   .keyboard-row {
-    gap: 6px;
+    gap: 3px;
   }
   
   .keyboard-key {
-    height: 54px;
-    min-width: 42px;
-    max-width: 46px;
-    font-size: 16px;
-  }
-  
-  .key-wide {
-    max-width: 74px;
-    min-width: 62px;
+    height: 70px;
+    font-size: 18px;
   }
   
   .key-text {
     display: block;
-    font-size: 10px;
+    font-size: 12px;
+  }
+}
+
+/* 超大屏幕优化 */
+@media (min-width: 1200px) {
+  .keyboard {
+    max-width: 420px;
   }
   
-  .row-2 {
-    padding: 0 3%;
+  .keyboard-key {
+    height: 75px;
+    font-size: 20px;
   }
 }
 </style>

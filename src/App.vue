@@ -180,8 +180,10 @@ html, body {
   flex-direction: column;
   align-items: center;
   font-family: 'Segoe UI', sans-serif;
-  padding: 0 40px;
+  padding: 0;
   outline: none;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -194,6 +196,9 @@ h1 {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
   gap: 6px;
+  width: 95vw;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .row {
@@ -207,18 +212,19 @@ h1 {
   }
 
 .cell {
-  width: 50px;
-  height: 50px;
+  width: 100%;
+  aspect-ratio: 1;
   border: 2px solid #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: clamp(16px, 4vw, 22px);
   font-weight: bold;
   text-transform: uppercase;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .correct {
@@ -252,5 +258,83 @@ h1 {
   cursor: pointer;
   transition: color 0.2s ease;
   margin-bottom: 30px;
+}
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+  .grid {
+    width: 96vw;
+    gap: 4px;
+  }
+  
+  .row {
+    gap: 4px;
+  }
+  
+  .cell {
+    font-size: clamp(16px, 5vw, 24px);
+    border-radius: 4px;
+  }
+  
+  h1 {
+    font-size: clamp(16px, 4vw, 20px);
+    margin-bottom: 15px;
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+  .grid {
+    width: 98vw;
+    gap: 3px;
+  }
+  
+  .row {
+    gap: 3px;
+  }
+  
+  .cell {
+    font-size: clamp(14px, 5.5vw, 20px);
+    border-width: 1px;
+    border-radius: 3px;
+  }
+}
+
+/* 大屏幕优化 */
+@media (min-width: 768px) {
+  .wordle-container {
+    padding: 0 40px;
+  }
+  
+  .grid {
+    width: 100%;
+    max-width: 380px;
+    gap: 8px;
+  }
+  
+  .row {
+    gap: 8px;
+  }
+  
+  .cell {
+    font-size: 20px;
+    border-radius: 6px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+}
+
+/* 超大屏幕 */
+@media (min-width: 1200px) {
+  .grid {
+    max-width: 420px;
+  }
+  
+  .cell {
+    font-size: 22px;
+  }
 }
 </style>
