@@ -28,7 +28,7 @@
         <p>(note: due to tariffs you will be charged an additional 104% diagnostic fee)</p>
       </div>
       <div v-else>
-        <p>The right answer is：' + {{targetWord.toUpperCase()}}</p>
+        <p>The right answer is： {{targetWord.toUpperCase()}}</p>
         <p>すみません</p>
         <p>You have been diagnosed as mentally retarded by Doctor Gin. Please contact us offline to discuss the cost and schedule of your follow-up treatment plan.</p>
       </div>
@@ -42,6 +42,7 @@
 import { ref, computed } from 'vue'
 import VirtualKeyboard from './components/VirtualKeyboard.vue'
 import dictionary from './assets/dictionary.json'
+import answerWords from './assets/answer_words.json'
 import { onMounted, onBeforeUnmount } from 'vue'
 import DisclaimerModal from '@/components/DisclaimerModal.vue'
 
@@ -61,8 +62,11 @@ onMounted(() => {
   window.addEventListener('disclaimer-acknowledged', checkAcknowledged)
 })
 
-const wordPool = dictionary.words 
-const targetWord = wordPool[Math.floor(Math.random() * wordPool.length)].toLowerCase()
+// 验证词典 - 用于检查用户输入是否合法
+const validationWords = dictionary.words 
+// 答案池 - 用于随机选择游戏答案
+const answerPool = answerWords.words
+const targetWord = answerPool[Math.floor(Math.random() * answerPool.length)].toLowerCase()
 
 const guesses = ref([]) 
 const currentGuess = ref('')
@@ -85,7 +89,7 @@ onBeforeUnmount(() => {
 
 
 function isValidGuess(word) {
-  return word.length === 5 && wordPool.includes(word.toLowerCase())
+  return word.length === 5 && validationWords.includes(word.toLowerCase())
 }
 
 
